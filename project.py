@@ -26,11 +26,13 @@
 #подключние бибилиотек
 import pygame
 import random
+from audiofiles import*
 from simple_platform import*
 from enemy import*
 
-#from 
 
+
+#from 
 
 
 
