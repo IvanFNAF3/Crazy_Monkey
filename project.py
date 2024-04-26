@@ -3,6 +3,7 @@
 #АКИМОВ ФОРЕВЕР
 #kf;jsdflksdjfklj
 #zvbif
+#rfvsojxtrvbi,thnf
 #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA#
 ####################################################################################
 # Данный код представляет собой каркас для игры в жанре платформер                 #
@@ -25,6 +26,7 @@
 #подключние бибилиотек
 import pygame
 import random
+
 
 #инициализация Pygame
 pygame.init()
