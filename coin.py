@@ -1,12 +1,14 @@
+#класс для поднимаемых предметов
 import pygame
+GOLD = (255, 215, 0)
 
-#класс для платформы
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
+class Collectible(pygame.sprite.Sprite):
+    def __init__(self, x, y):
         super().__init__()
+
         #создание изображения для спрайта
-        self.image = pygame.Surface((width, height))
-        self.image.fill(0,0,255)
+        self.image = pygame.Surface((16, 16))
+        self.image.fill(GOLD)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
