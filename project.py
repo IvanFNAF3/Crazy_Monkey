@@ -26,6 +26,9 @@
 #подключние бибилиотек
 import pygame
 import random
+#from 
+
+
 
 
 #инициализация Pygame
@@ -120,7 +123,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         #создание изображения для спрайта
         self.image = pygame.Surface((width, height))
-        self.image.fill(BLUE)
+        self.image.fill(0,0,255)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
