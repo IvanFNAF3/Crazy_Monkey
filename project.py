@@ -26,6 +26,9 @@
 #подключние бибилиотек
 import pygame
 import random
+from simple_platform import*
+from enemy import*
+
 #from 
 
 
@@ -71,38 +74,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.x_velocity
         self.rect.y += self.y_velocity
 
-#класс для патрулирующих врагов
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-
-        #создание изображения для спрайта
-        self.image = pygame.Surface((32, 32))
-        self.image.fill(RED)
-
-        #начальная позиция по Х, нужна для патрулирования
-        self.x_start = x
-        #выбор направления начального движения
-        self.direction = random.choice([-1, 1])
-
-        #создание хитбокса для спрайта
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-        #компоненты скорости по оси Х и Y
-        self.x_velocity = 1
-        self.y_velocity = 0
-    
-    def update(self):
-        #если расстояние от начальной точки превысило 50
-        #то меняем направление
-        if abs(self.x_start - self.rect.x) > 50:
-            self.direction *= -1
-
-        #движение спрайта по оси Х
-        self.rect.x += self.x_velocity * self.direction
-
 #класс для поднимаемых предметов
 class Collectible(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -111,19 +82,6 @@ class Collectible(pygame.sprite.Sprite):
         #создание изображения для спрайта
         self.image = pygame.Surface((16, 16))
         self.image.fill(GOLD)
-
-        #создание хитбокса для спрайта
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-#класс для платформы
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
-        super().__init__()
-        #создание изображения для спрайта
-        self.image = pygame.Surface((width, height))
-        self.image.fill(0,0,255)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
