@@ -159,8 +159,8 @@ def check_collision_enemies(object, enemies_list):
         #при коллизии
         if object.rect.colliderect(enemy.rect):
             #объект пропадает из всех групп спрайтов и игра заканчивается
-            object.kill()
-            running = False
+            enemy.kill()
+            #running = False
 
 #проверка 
 def check_collision_collectibles(object):
