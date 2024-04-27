@@ -4,9 +4,12 @@ from const import*
 #класс для игрока
 class Player(pygame.sprite.Sprite):
 
-    health = 10
+    health = 3
     speed = 5
     is_boosted = False
+    maxCooldown = 0.5
+    cooldown = 0
+    is_in_cooldown = False
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)

@@ -161,8 +161,15 @@ def check_collision_enemies(object, enemies_list):
         #при коллизии
         if object.rect.colliderect(enemy.rect):
             #объект пропадает из всех групп спрайтов и игра заканчивается
-            object.kill()
-            running = False
+            if reload_energy > 0:
+                enemy.kill()
+            else:
+                if object.cooldown <= 0:
+                    object.health -= 1
+                    if(object.health <= 0):
+                        pygame.quit()
+                    object.cooldown = object.maxCooldown
+                
 
 #проверка 
 def check_collision_collectibles(object, collectibles_list):
@@ -218,6 +225,13 @@ def game():
     score_text = font.render("Счёт: 0", True, SCORE_COLOR) # выбор цвета и текст
     score_rect = score_text.get_rect() # создание хитбокса текста
     score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране
+
+    #HP игрока
+    font_hp = pygame.font.Font(None, 48) # создание объекта, выбор размера шрифта
+    hp_text = font_hp.render("Здоровье: ", player.health, True, (255, 0, 0)) # выбор цвета и текст
+    hp_rect = hp_text.get_rect()
+    hp_rect.topleft = (0, 0)
+
 
     #создаем групп спрайтов
     player_and_platforms = pygame.sprite.Group()
@@ -299,10 +313,15 @@ def game():
             player.speed = 5
             player.change_image(monkey_static)
 
+        if(player.cooldown > 0):
+            player.cooldown -= 1/60
+
 
         #обновление счёта на экране
         score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)
+        hp_text = font_hp.render("Здоровье: " + str(player.health), True, (255, 0, 0))
         screen.blit(score_text, score_rect)
+        screen.blit(hp_text, hp_rect)
         #обновление экрана и установка частоты кадров
         pygame.display.update()
         clock.tick(60)
