@@ -104,6 +104,7 @@ def check_collision_energies(object):
             if(reload_energy <= 0):
                 speed = 10
                 reload_energy = maxReload_energy
+                player.change_image(monkey_crazy)
 
 
 #создаем экран, счетчик частоты кадров и очков
@@ -132,7 +133,7 @@ enemies = pygame.sprite.Group()
 collectibles = pygame.sprite.Group()
 energies = pygame.sprite.Group()
 
-#в трех циклах добавляем объекты в соответствующие группы
+#в четырех циклах добавляем объекты в соответствующие группы
 for i in enemies_list:
     enemies.add(i)
 
@@ -146,7 +147,7 @@ for i in energies_list:
     energies.add(i)
 
 #отдельно добавляем игрока
-player_and_platforms.add(player)
+#player_and_platforms.add(player)
 
 #игровой цикл
 running = True
@@ -177,6 +178,7 @@ while running:
     #отрисовываем фон, платформы, врагов и собираемые предметы
     #screen.fill(BG)
     screen.blit(bg_gameplay, (0, 0))
+    screen.blit(player.image, player.rect)
     player_and_platforms.draw(screen)
     enemies.draw(screen)
     collectibles.draw(screen)
@@ -194,6 +196,7 @@ while running:
         reload_energy -= 1/60
     elif(reload_energy <= 0):
         speed = 5
+        player.change_image(monkey_static)
 
 
     #обновление счёта на экране

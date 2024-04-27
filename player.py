@@ -1,15 +1,12 @@
 import pygame
-
-PLAYER_COLOR = (139, 69, 19)
+from const import*
 
 #класс для игрока
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__()
-
-        #создание изображения для спрайта
-        self.image = pygame.Surface((32, 32))
-        self.image.fill(PLAYER_COLOR)
+        pygame.sprite.Sprite.__init__(self)
+        
+        self.image = monkey_static
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
@@ -27,3 +24,6 @@ class Player(pygame.sprite.Sprite):
         # Обновление позиции игрока
         self.rect.x += self.x_velocity
         self.rect.y += self.y_velocity
+
+    def change_image(self, _image):
+        self.image = _image
