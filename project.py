@@ -94,7 +94,6 @@ def check_collision_collectibles(object):
 
 def check_collision_energies(object):
     global energies_list
-    global score
     global speed
     global reload
     for energy in energies_list:
