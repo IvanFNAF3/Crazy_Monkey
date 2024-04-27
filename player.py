@@ -1,6 +1,6 @@
 import pygame
 
-GREEN = (0, 255, 0)
+PLAYER_COLOR = (139, 69, 19)
 
 #класс для игрока
 class Player(pygame.sprite.Sprite):
@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
 
         #создание изображения для спрайта
         self.image = pygame.Surface((32, 32))
-        self.image.fill(GREEN)
+        self.image.fill(PLAYER_COLOR)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()

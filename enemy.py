@@ -1,7 +1,7 @@
 import pygame
 import random
 
-RED = (255, 0, 0)
+ENEMY_COLOR = (105, 105, 105)
 
 #класс для патрулирующих врагов
 class Enemy(pygame.sprite.Sprite):
@@ -10,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
 
         #создание изображения для спрайта
         self.image = pygame.Surface((32, 32))
-        self.image.fill(RED)
+        self.image.fill(ENEMY_COLOR)
 
         #начальная позиция по Х, нужна для патрулирования
         self.x_start = x

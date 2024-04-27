@@ -24,17 +24,9 @@
 
 #подключние бибилиотек
 import pygame
-import random
 from audiofiles import*
 from simple_platform import*
 from enemy import*
-
-
-
-#from 
-
-
-
 from simple_platform import*
 from enemy import*
 from coin import*
@@ -48,12 +40,8 @@ pygame.init()
 WIDTH = 1920
 HEIGHT = 1080
 #константы-цвета
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-GOLD = (255, 215, 0)
-BLACK = (0, 0, 0)
+BG = (34, 139, 34)
+SCORE_COLOR = (0, 0, 0)
 
 #функция для проверки коллизий c платформой
 def check_collision_platforms(object, platform_list):
@@ -113,15 +101,15 @@ score = 0
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
 player = Player(50, 50)
-platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20)]
+platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(500, 170, 350, 20)]
 enemies_list = [Enemy(120, 315)]
 collectibles_list = [Collectible(280, 135)]
 
 #счёт игры
 font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
-score_text = font.render("Счёт: 0", True, BLACK) # выбор цвета и текст
+score_text = font.render("Счёт: 0", True, SCORE_COLOR) # выбор цвета и текст
 score_rect = score_text.get_rect() # создание хитбокса текста
-score_rect.topleft = (WIDTH // 2, 100) # расположение хитбокса\текста на экране
+score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране
 
 #создаем групп спрайтов
 player_and_platforms = pygame.sprite.Group()
@@ -148,7 +136,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
     #проверяем нажатие на клавиши для перемещения
     keys = pygame.key.get_pressed()
     player.x_velocity = 0
@@ -169,7 +156,7 @@ while running:
     enemies.update()
 
     #отрисовываем фон, платформы, врагов и собираемые предметы
-    screen.fill(WHITE)
+    screen.fill(BG)
     player_and_platforms.draw(screen)
     enemies.draw(screen)
     collectibles.draw(screen)
@@ -180,9 +167,8 @@ while running:
     check_collision_collectibles(player)
 
     #обновление счёта на экране
-    score_text = font.render("Счёт: " + str(score), True, BLACK)
+    score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)
     screen.blit(score_text, score_rect)
-
     #обновление экрана и установка частоты кадров
     pygame.display.update()
     clock.tick(60)

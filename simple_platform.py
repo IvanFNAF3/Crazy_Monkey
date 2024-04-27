@@ -1,6 +1,6 @@
 import pygame
 
-BLUE = (0, 0, 255)
+PLATFORM_COLOR = (0, 100, 0)
 
 #класс для платформы
 class Platform(pygame.sprite.Sprite):
@@ -8,7 +8,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         #создание изображения для спрайта
         self.image = pygame.Surface((width, height))
-        self.image.fill(BLUE)
+        self.image.fill(PLATFORM_COLOR)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
