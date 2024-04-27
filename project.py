@@ -339,7 +339,7 @@ def game():
     font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
     score_text = font.render("Счёт: 0", True, SCORE_COLOR) # выбор цвета и текст
     score_rect = score_text.get_rect() # создание хитбокса текста
-    score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране
+    score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране                
 
     #HP игрока
     font_hp = pygame.font.Font(None, 48) # создание объекта, выбор размера шрифта
