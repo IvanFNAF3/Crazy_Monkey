@@ -132,6 +132,31 @@ def tutorial():
                 if close_button.rect.collidepoint(x, y):
                     menu()
 
+def gameover():
+    global is_music_playing
+    screen.blit(bg_gameover, (0,0))
+
+    yes_button = Button("sprites/yes_ui.png", 750, 800)
+    no_button = Button("sprites/no_ui.png", 1000, 800)
+
+    buttons = [yes_button, no_button]
+    init_but(screen, buttons)
+
+    while True:
+        init_but(screen, buttons)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if yes_button.rect.collidepoint(x, y):
+                    game()
+                elif no_button.rect.collidepoint(x, y):
+                    menu()
+
+
 #функция для проверки коллизий c платформой
 def check_h_collision_platforms(object, platform_list):
     #перебираем все платформы из списка (не группы спрайтов)
@@ -182,7 +207,7 @@ def check_collision_enemies(object, enemies_list):
                 if object.cooldown <= 0:
                     object.health -= 1
                     if(object.health <= 0):
-                        pygame.quit()
+                        gameover()
                     object.cooldown = object.maxCooldown
                 
 
@@ -199,6 +224,8 @@ def check_collision_collectibles(object, collectibles_list):
             collectibles_list.remove(collectible)
             #прибавляем одно очко
             score += 1
+            if(score == 11):
+                menu()
 
 def check_collision_energies(object, energies_list, _maxReloadEnergy):
     global speed
@@ -225,6 +252,8 @@ def game():
     global score
     score = 0
     global reload_energy
+    global timer
+    timer = 35
     reload_energy = 0
     maxReload_energy = 5
 
@@ -258,6 +287,12 @@ def game():
     hp_text = font_hp.render("Здоровье: ", player.health, True, (255, 0, 0)) # выбор цвета и текст
     hp_rect = hp_text.get_rect()
     hp_rect.topleft = (0, 0)
+
+    #Таймер игрока
+    font_timer = pygame.font.Font(None, 60)
+    timer_text =font_timer.render("Времени осталось: ", str(timer), True, (0, 0, 0))
+    timer_rect = timer_text.get_rect()
+    timer_rect.topleft = (WIDTH//2 - 100, 40)
 
 
     #создаем групп спрайтов
@@ -309,8 +344,6 @@ def game():
         #гравитация для игрока
         player.y_velocity += 0.3 
 
-        # screen.blit(player.image, player.rect)
-
         #обновляем значения атрибутов игрока и врагов
         player.update()
         enemies.update()
@@ -345,12 +378,21 @@ def game():
         if(player.cooldown > 0):
             player.cooldown -= 1/60
 
+        if(timer > 0):
+            timer -= 1/60 
+        else:
+            gameover()
+
+
 
         #обновление счёта на экране
         score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)
         hp_text = font_hp.render("Здоровье: " + str(player.health), True, (255, 0, 0))
+        timer_text = font_timer.render("Времени осталось: " + str(int(timer)), True, (0, 0, 0))
         screen.blit(score_text, score_rect)
         screen.blit(hp_text, hp_rect)
+        screen.blit(timer_text, timer_rect)
+        
         #обновление экрана и установка частоты кадров
         pygame.display.update()
         clock.tick(60)
