@@ -116,7 +116,7 @@ jumps = 4
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
 player = Player(50, 50)
-platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20), Platform(0, 0, 2 * HEIGHT - 50, 20), Platform(0, 0, 20, 2 * HEIGHT - 50), Platform(1900, 0, 20, 2 * HEIGHT - 50)]
+platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1250, 400, 190, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20), Platform(0, 0, 2 * HEIGHT - 50, 20), Platform(0, 0, 20, 2 * HEIGHT - 50), Platform(1900, 0, 20, 2 * HEIGHT - 50), Platform(1000, 450, 170, 20)]
 enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
 collectibles_list = [Collectible(280, 145), Collectible(150, 325),Collectible(160, 230), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40), Collectible(500, 380), Collectible(1250, 380), Collectible(750, 630), Collectible(1000, 400), Collectible(750,325), Collectible(500, 75), ]
 energies_list = [Energy(320, 145), Energy(1000, 260), Energy(1150, 40)]
