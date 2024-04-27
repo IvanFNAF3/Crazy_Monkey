@@ -1,17 +1,15 @@
 import pygame
 import random
+from const import*
 
 ENEMY_COLOR = (105, 105, 105)
 
 #класс для патрулирующих врагов
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__()
-
-        global distance
+        pygame.sprite.Sprite.__init__(self)
         #создание изображения для спрайта
-        self.image = pygame.Surface((32, 32))
-        self.image.fill(ENEMY_COLOR)
+        self.image = bull
 
         #начальная позиция по Х, нужна для патрулирования
         self.x_start = x

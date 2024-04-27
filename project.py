@@ -153,12 +153,16 @@ def check_v_collision_platforms(object, platform_list):
 
 #функция проверки коллизии выбранного объекта с объектами Enemies
 def check_collision_enemies(object, enemies_list):
+    #running делаем видимой внутри функции чтобы было возможно
+    #завершить игру
+    global running
     #в списке проверяем
     for enemy in enemies_list:
         #при коллизии
         if object.rect.colliderect(enemy.rect):
-            #враг умирает
-            enemy.kill()
+            #объект пропадает из всех групп спрайтов и игра заканчивается
+            object.kill()
+            running = False
 
 #проверка 
 def check_collision_collectibles(object, collectibles_list):
@@ -182,7 +186,7 @@ def check_collision_energies(object, energies_list, _maxReloadEnergy):
             energy.kill()
             energies_list.remove(energy)
             if(reload_energy <= 0):
-                speed = 10
+                object.speed = 10
                 reload_energy = _maxReloadEnergy
                 object.change_image(monkey_crazy)
 
@@ -197,13 +201,12 @@ def game():
     score = 0
     global reload_energy
     reload_energy = 0
-    global speed
-    speed = 5
     maxReload_energy = 5
 
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
+    player_sprite = player.image
     h_platforms_list = [H_Platform(0, HEIGHT-25, WIDTH, 50),H_Platform(50, 150, 100, 20), H_Platform(100, 350, 100, 20), H_Platform(250, 170, 100, 20), H_Platform(750, 180, 400, 20), H_Platform(950, 280, 450, 20), H_Platform(1250, 400, 190, 20), H_Platform(450, 400, 100, 20), H_Platform(500, 650, 350, 20), H_Platform(700, 540, 200, 20), H_Platform(1000, 450, 170, 20)]
     v_platforms_list = [V_Platform(1900, 0, 20, 2 * HEIGHT - 50), V_Platform(0, 0, 20, 2 * HEIGHT - 50)]
     enemies_list = [Enemy(120, 325), Enemy(1300, 255),Enemy(1100,255), Enemy(575,625), Enemy(1300,375)]
@@ -249,11 +252,12 @@ def game():
         keys = pygame.key.get_pressed()
         player.x_velocity = 0
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            player.x_velocity = -speed
-            pygame.transform.rotate(player.image, -360)
-            screen.blit(player.image, player.rect)
+            player.x_velocity = -player.speed
+            player_sprite = pygame.transform.flip(player.image, True, False)
+            #screen.blit(player.image, player.rect)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            player.x_velocity = speed
+            player.x_velocity = player.speed
+            player_sprite = pygame.transform.flip(player.image, False, False)
         #условие прыжка более сложное
         if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
             player.y_velocity = -9
@@ -262,15 +266,19 @@ def game():
         #гравитация для игрока
         player.y_velocity += 0.3 
 
+        # screen.blit(player.image, player.rect)
+
         #обновляем значения атрибутов игрока и врагов
         player.update()
         enemies.update()
 
         #отрисовываем фон, платформы, врагов и собираемые предметы
         screen.blit(bg_gameplay, (0, 0))
-        screen.blit(player.image, player.rect)
+        
+        screen.blit(player_sprite, player.rect)
         player_and_platforms.draw(screen)
-        enemies.draw(screen)
+        for enemy in enemies:
+            screen.blit(enemy.image, enemy.rect)
         collectibles.draw(screen)
         for energy in energies:
             screen.blit(energy.image, energy.rect)
@@ -288,7 +296,7 @@ def game():
         if(reload_energy > 0):
             reload_energy -= 1/60
         elif(reload_energy <= 0):
-            speed = 5
+            player.speed = 5
             player.change_image(monkey_static)
 
 

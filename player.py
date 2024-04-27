@@ -3,6 +3,11 @@ from const import*
 
 #класс для игрока
 class Player(pygame.sprite.Sprite):
+
+    health = 10
+    speed = 5
+    is_boosted = False
+
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         
