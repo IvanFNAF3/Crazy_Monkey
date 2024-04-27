@@ -114,8 +114,8 @@ reload = 0
 player = Player(50, 50)
 platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1050, 60, 150, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20)]
 enemies_list = [Enemy(120, 315)]
-collectibles_list = [Collectible(280, 135)]
-energies_list = [Energy(320, 135)]
+collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40)]
+energies_list = [Energy(320, 145), Energy(1000, 260)]
 
 #счёт игры
 font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
