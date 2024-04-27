@@ -25,7 +25,7 @@
 #подключние бибилиотек
 import pygame
 from audiofiles import*
-from simple_platform import*
+from platforms import*
 from enemy import*
 from coin import*
 from player import*
@@ -60,8 +60,8 @@ def menu():
         msc_off_button = Button("sprites/msc_off_ui.png", 60, HEIGHT - 60)
         msc_on_button = Button("sprites/msc_on_ui_selected.png", 200, HEIGHT - 60)
     else:
-        msc_off_button = Button("sprites/msc_off_ui_selected.png", 336, 200)
-        msc_on_button = Button("sprites/msc_on_ui.png", 250, 200)
+        msc_off_button = Button("sprites/msc_off_ui_selected.png", 60, HEIGHT - 60)
+        msc_on_button = Button("sprites/msc_on_ui.png", 200, HEIGHT - 60)
 
     buttons = [start_button, exit_button, msc_on_button, msc_off_button, aboutgame_button]
 
@@ -92,11 +92,34 @@ def menu():
                     msc_off_button.change_img("sprites/msc_off_ui.png") 
                     msc_on_button.change_img("sprites/msc_on_ui_selected.png")
                     is_music_playing = True
+                elif aboutgame_button.rect.collidepoint(x, y):
+                    tutorial()
 
-    
+def tutorial():
+    global is_music_playing
+    screen.blit(bg_aboutgame, (0, 0))
+
+    close_button = Button("sprites/exit_menu_ui.png", 900, 800)
+
+    buttons = [close_button]
+
+    init_but(screen, buttons)
+    pygame.display.update()
+
+    while True:
+        init_but(screen, buttons)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if close_button.rect.collidepoint(x, y):
+                    menu()
 
 #функция для проверки коллизий c платформой
-def check_collision_platforms(object, platform_list):
+def check_h_collision_platforms(object, platform_list):
     #перебираем все платформы из списка (не группы спрайтов)
     for platform in platform_list:
         if object.rect.colliderect(platform.rect):
@@ -109,8 +132,19 @@ def check_collision_platforms(object, platform_list):
             elif object.y_velocity < 0: # Если спрайт движется вверх
                 #ставим спрайт снизу платформы
                 object.rect.top = platform.rect.bottom
-                object.y_velocity = 0
+                object.y_velocity = 0.6
             elif object.x_velocity > 0: # Если спрайт движется вправо
+                #ставим спрайт слева от платформы
+                object.rect.right = platform.rect.left
+            elif object.x_velocity < 0: # Если спрайт движется влево
+                #ставим спрайт справа от платформы
+                object.rect.left = platform.rect.right
+
+def check_v_collision_platforms(object, platform_list):
+    for platform in platform_list:
+        if object.rect.colliderect(platform.rect):
+            object.y_velocity = 0.6
+            if object.x_velocity > 0: # Если спрайт движется вправо
                 #ставим спрайт слева от платформы
                 object.rect.right = platform.rect.left
             elif object.x_velocity < 0: # Если спрайт движется влево
@@ -170,7 +204,8 @@ def game():
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
-    platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1050, 60, 150, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20)]
+    h_platforms_list = [H_Platform(0, HEIGHT-25, WIDTH, 50),H_Platform(50, 150, 100, 20), H_Platform(100, 350, 100, 20), H_Platform(250, 170, 100, 20), H_Platform(750, 180, 400, 20), H_Platform(950, 280, 450, 20), H_Platform(1250, 400, 190, 20), H_Platform(450, 400, 100, 20), H_Platform(500, 650, 350, 20), H_Platform(700, 540, 200, 20), H_Platform(1000, 450, 170, 20)]
+    v_platforms_list = [V_Platform(1900, 0, 20, 2 * HEIGHT - 50), V_Platform(0, 0, 20, 2 * HEIGHT - 50)]
     enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
     collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40), Collectible(500, 380)]
     energies_list = [Energy(320, 145), Energy(1000, 260), Energy(1150, 40)]
@@ -191,7 +226,10 @@ def game():
     for i in enemies_list:
         enemies.add(i)
 
-    for i in platforms_list:
+    for i in h_platforms_list:
+        player_and_platforms.add(i)
+
+    for i in v_platforms_list:
         player_and_platforms.add(i)
 
     for i in collectibles_list:
@@ -210,9 +248,9 @@ def game():
         #проверяем нажатие на клавиши для перемещения
         keys = pygame.key.get_pressed()
         player.x_velocity = 0
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             player.x_velocity = -speed
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             player.x_velocity = speed
         #условие прыжка более сложное
         if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
@@ -236,10 +274,13 @@ def game():
             screen.blit(energy.image, energy.rect)
 
         #проверяем все возможные коллизии
-        check_collision_platforms(player, platforms_list)
+        check_h_collision_platforms(player, h_platforms_list)
+        check_v_collision_platforms(player, v_platforms_list)
         check_collision_enemies(player, enemies_list)
         check_collision_collectibles(player, collectibles_list)
         check_collision_energies(player, energies_list, maxReload_energy)
+
+        print(player.y_velocity)
 
         #уменьшаем перезарядку если есть
         if(reload_energy > 0):
