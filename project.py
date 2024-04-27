@@ -32,6 +32,7 @@ from enemy import*
 from coin import*
 from player import*
 from energy import*
+from const import*
 
 
 #инициализация Pygame
@@ -100,8 +101,9 @@ def check_collision_energies(object):
         if object.rect.colliderect(energy.rect):
             energy.kill()
             energies_list.remove(energy)
-            speed += 5
-            reload = maxReload
+            if(reload <= 0):
+                speed = 10
+                reload = maxReload
 
 
 #создаем экран, счетчик частоты кадров и очков
@@ -160,7 +162,7 @@ while running:
     if keys[pygame.K_RIGHT]:
         player.x_velocity = speed
     #условие прыжка более сложное
-    if keys[pygame.K_SPACE] and player.on_ground == True:
+    if player.on_ground == True:
         player.y_velocity = -9
         player.on_ground = False
 
@@ -172,7 +174,8 @@ while running:
     enemies.update()
 
     #отрисовываем фон, платформы, врагов и собираемые предметы
-    screen.fill(BG)
+    #screen.fill(BG)
+    screen.blit(bg_gameplay, (0, 0))
     player_and_platforms.draw(screen)
     enemies.draw(screen)
     collectibles.draw(screen)

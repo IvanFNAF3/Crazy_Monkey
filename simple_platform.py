@@ -1,6 +1,6 @@
 import pygame
 
-PLATFORM_COLOR = (0, 100, 0)
+PLATFORM_COLOR = (133, 94, 66)
 
 #класс для платформы
 class Platform(pygame.sprite.Sprite):
