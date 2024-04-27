@@ -113,7 +113,7 @@ reload = 0
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
 player = Player(50, 50)
-platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(500, 170, 350, 20)]
+platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(500, 170, 350, 20), Platform(750, 100, 400, 10)]
 enemies_list = [Enemy(120, 315)]
 collectibles_list = [Collectible(280, 135)]
 energies_list = [Energy(320, 135)]
