@@ -27,12 +27,12 @@ import pygame
 from audiofiles import*
 from simple_platform import*
 from enemy import*
-from simple_platform import*
-from enemy import*
 from coin import*
 from player import*
 from energy import*
 from const import*
+from interface import*
+from init import*
 
 
 #инициализация Pygame
@@ -41,11 +41,59 @@ pygame.init()
 #константы-параметры окна
 WIDTH = 1920
 HEIGHT = 1080
+
 #константы-цвета
 BG = (34, 139, 34)
 SCORE_COLOR = (0, 0, 0)
-speed = 5
-maxReload_energy = 5
+
+#Создаём меню
+def menu():
+    global is_music_playing
+    pygame.mixer.music.play(-1)
+    screen.blit(bg_menu, (0, 0))
+
+    start_button = Button("sprites/play_ui_1.png", 900, 745)
+    exit_button = Button("sprites/exit_ui.png", 910, 981)
+    aboutgame_button = Button("sprites/aboutgame_ui.png", 910, 875)
+
+    if is_music_playing == True:
+        msc_off_button = Button("sprites/msc_off_ui.png", 60, HEIGHT - 60)
+        msc_on_button = Button("sprites/msc_on_ui_selected.png", 200, HEIGHT - 60)
+    else:
+        msc_off_button = Button("sprites/msc_off_ui_selected.png", 336, 200)
+        msc_on_button = Button("sprites/msc_on_ui.png", 250, 200)
+
+    buttons = [start_button, exit_button, msc_on_button, msc_off_button, aboutgame_button]
+
+    init_but(screen, buttons)
+    pygame.display.update()
+
+    while True:
+        init_but(screen, buttons)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if start_button.rect.collidepoint(x, y):
+                    game()
+                elif exit_button.rect.collidepoint(x, y):
+                    pygame.quit()
+                    quit()
+                elif msc_off_button.rect.collidepoint(x, y):
+                    pygame.mixer.music.set_volume(0.0)
+                    msc_off_button.change_img("sprites/msc_off_ui_selected.png") 
+                    msc_on_button.change_img("sprites/msc_on_ui.png")
+                    is_music_playing = False 
+                elif msc_on_button.rect.collidepoint(x, y):
+                    pygame.mixer.music.set_volume(0.4)
+                    msc_off_button.change_img("sprites/msc_off_ui.png") 
+                    msc_on_button.change_img("sprites/msc_on_ui_selected.png")
+                    is_music_playing = True
+
+    
 
 #функция для проверки коллизий c платформой
 def check_collision_platforms(object, platform_list):
@@ -79,9 +127,8 @@ def check_collision_enemies(object, enemies_list):
             enemy.kill()
 
 #проверка 
-def check_collision_collectibles(object):
+def check_collision_collectibles(object, collectibles_list):
     #делаем видимыми объекты для подбора в игре и очки
-    global collectibles_list
     global score
     #если object касается collictible 
     for collectible in collectibles_list:
@@ -93,8 +140,7 @@ def check_collision_collectibles(object):
             #прибавляем одно очко
             score += 1
 
-def check_collision_energies(object):
-    global energies_list
+def check_collision_energies(object, energies_list, _maxReloadEnergy):
     global speed
     global reload_energy
     for energy in energies_list:
@@ -103,107 +149,113 @@ def check_collision_energies(object):
             energies_list.remove(energy)
             if(reload_energy <= 0):
                 speed = 10
-                reload_energy = maxReload_energy
-                player.change_image(monkey_crazy)
+                reload_energy = _maxReloadEnergy
+                object.change_image(monkey_crazy)
 
 
 #создаем экран, счетчик частоты кадров и очков
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-score = 0
-reload_energy = 0
-jumps = 4
+is_music_playing = True
 
-#создаем игрока, платформы, врагов и то, что будем собирать в игре
-player = Player(50, 50)
-platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1050, 60, 150, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20)]
-enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
-collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40), Collectible(500, 380)]
-energies_list = [Energy(320, 145), Energy(1000, 260), Energy(1150, 40)]
-
-#счёт игры
-font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
-score_text = font.render("Счёт: 0", True, SCORE_COLOR) # выбор цвета и текст
-score_rect = score_text.get_rect() # создание хитбокса текста
-score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране
-
-#создаем групп спрайтов
-player_and_platforms = pygame.sprite.Group()
-enemies = pygame.sprite.Group()
-collectibles = pygame.sprite.Group()
-energies = pygame.sprite.Group()
-
-#в четырех циклах добавляем объекты в соответствующие группы
-for i in enemies_list:
-    enemies.add(i)
-
-for i in platforms_list:
-    player_and_platforms.add(i)
-
-for i in collectibles_list:
-    collectibles.add(i)
-
-for i in energies_list:
-    energies.add(i)
-
-#отдельно добавляем игрока
-#player_and_platforms.add(player)
-
-#игровой цикл
-running = True
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    #проверяем нажатие на клавиши для перемещения
-    keys = pygame.key.get_pressed()
-    player.x_velocity = 0
-    if keys[pygame.K_LEFT]:
-        player.x_velocity = -speed
-    if keys[pygame.K_RIGHT]:
-        player.x_velocity = speed
-    #условие прыжка более сложное
-    if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
-        player.y_velocity = -9
-        player.on_ground = False
-
-    #гравитация для игрока
-    player.y_velocity += 0.3 
-
-    #обновляем значения атрибутов игрока и врагов
-    player.update()
-    enemies.update()
-
-    #отрисовываем фон, платформы, врагов и собираемые предметы
-    #screen.fill(BG)
-    screen.blit(bg_gameplay, (0, 0))
-    screen.blit(player.image, player.rect)
-    player_and_platforms.draw(screen)
-    enemies.draw(screen)
-    collectibles.draw(screen)
-    for energy in energies:
-        screen.blit(energy.image, energy.rect)
-
-    #проверяем все возможные коллизии
-    check_collision_platforms(player, platforms_list)
-    check_collision_enemies(player, enemies_list)
-    check_collision_collectibles(player)
-    check_collision_energies(player)
-
-    #уменьшаем перезарядку если есть
-    if(reload_energy > 0):
-        reload_energy -= 1/60
-    elif(reload_energy <= 0):
-        speed = 5
-        player.change_image(monkey_static)
+def game():
+    global score
+    score = 0
+    global reload_energy
+    reload_energy = 0
+    global speed
+    speed = 5
+    maxReload_energy = 5
 
 
-    #обновление счёта на экране
-    score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)
-    screen.blit(score_text, score_rect)
-    #обновление экрана и установка частоты кадров
-    pygame.display.update()
-    clock.tick(60)
+    #создаем игрока, платформы, врагов и то, что будем собирать в игре
+    player = Player(50, 50)
+    platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1050, 60, 150, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20)]
+    enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
+    collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40), Collectible(500, 380)]
+    energies_list = [Energy(320, 145), Energy(1000, 260), Energy(1150, 40)]
 
-pygame.quit()
+    #счёт игры
+    font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
+    score_text = font.render("Счёт: 0", True, SCORE_COLOR) # выбор цвета и текст
+    score_rect = score_text.get_rect() # создание хитбокса текста
+    score_rect.topleft = (WIDTH - 100, 20) # расположение хитбокса\текста на экране
+
+    #создаем групп спрайтов
+    player_and_platforms = pygame.sprite.Group()
+    enemies = pygame.sprite.Group()
+    collectibles = pygame.sprite.Group()
+    energies = pygame.sprite.Group()
+
+    #в четырех циклах добавляем объекты в соответствующие группы
+    for i in enemies_list:
+        enemies.add(i)
+
+    for i in platforms_list:
+        player_and_platforms.add(i)
+
+    for i in collectibles_list:
+        collectibles.add(i)
+
+    for i in energies_list:
+        energies.add(i)
+
+    #игровой цикл
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        #проверяем нажатие на клавиши для перемещения
+        keys = pygame.key.get_pressed()
+        player.x_velocity = 0
+        if keys[pygame.K_LEFT]:
+            player.x_velocity = -speed
+        if keys[pygame.K_RIGHT]:
+            player.x_velocity = speed
+        #условие прыжка более сложное
+        if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
+            player.y_velocity = -9
+            player.on_ground = False
+
+        #гравитация для игрока
+        player.y_velocity += 0.3 
+
+        #обновляем значения атрибутов игрока и врагов
+        player.update()
+        enemies.update()
+
+        #отрисовываем фон, платформы, врагов и собираемые предметы
+        screen.blit(bg_gameplay, (0, 0))
+        screen.blit(player.image, player.rect)
+        player_and_platforms.draw(screen)
+        enemies.draw(screen)
+        collectibles.draw(screen)
+        for energy in energies:
+            screen.blit(energy.image, energy.rect)
+
+        #проверяем все возможные коллизии
+        check_collision_platforms(player, platforms_list)
+        check_collision_enemies(player, enemies_list)
+        check_collision_collectibles(player, collectibles_list)
+        check_collision_energies(player, energies_list, maxReload_energy)
+
+        #уменьшаем перезарядку если есть
+        if(reload_energy > 0):
+            reload_energy -= 1/60
+        elif(reload_energy <= 0):
+            speed = 5
+            player.change_image(monkey_static)
+
+
+        #обновление счёта на экране
+        score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)
+        screen.blit(score_text, score_rect)
+        #обновление экрана и установка частоты кадров
+        pygame.display.update()
+        clock.tick(60)
+
+    pygame.quit()
+
+menu()

@@ -8,6 +8,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
 
+        global distance
         #создание изображения для спрайта
         self.image = pygame.Surface((32, 32))
         self.image.fill(ENEMY_COLOR)
