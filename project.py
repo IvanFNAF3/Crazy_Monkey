@@ -45,7 +45,7 @@ HEIGHT = 1080
 BG = (34, 139, 34)
 SCORE_COLOR = (0, 0, 0)
 speed = 5
-maxReload = 5
+maxReload_energy = 5
 
 #функция для проверки коллизий c платформой
 def check_collision_platforms(object, platform_list):
@@ -96,21 +96,22 @@ def check_collision_collectibles(object):
 def check_collision_energies(object):
     global energies_list
     global speed
-    global reload
+    global reload_energy
     for energy in energies_list:
         if object.rect.colliderect(energy.rect):
             energy.kill()
             energies_list.remove(energy)
-            if(reload <= 0):
+            if(reload_energy <= 0):
                 speed = 10
-                reload = maxReload
+                reload_energy = maxReload_energy
 
 
 #создаем экран, счетчик частоты кадров и очков
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 score = 0
-reload = 0
+reload_energy = 0
+jumps = 4
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
 player = Player(50, 50)
@@ -162,7 +163,7 @@ while running:
     if keys[pygame.K_RIGHT]:
         player.x_velocity = speed
     #условие прыжка более сложное
-    if player.on_ground == True:
+    if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
         player.y_velocity = -9
         player.on_ground = False
 
@@ -189,9 +190,9 @@ while running:
     check_collision_energies(player)
 
     #уменьшаем перезарядку если есть
-    if(reload > 0):
-        reload -= 1/60
-    elif(reload <= 0):
+    if(reload_energy > 0):
+        reload_energy -= 1/60
+    elif(reload_energy <= 0):
         speed = 5
 
 
