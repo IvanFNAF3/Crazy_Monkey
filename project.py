@@ -250,6 +250,8 @@ def game():
         player.x_velocity = 0
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             player.x_velocity = -speed
+            pygame.transform.rotate(player.image, -360)
+            screen.blit(player.image, player.rect)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             player.x_velocity = speed
         #условие прыжка более сложное
