@@ -177,7 +177,8 @@ while running:
     player_and_platforms.draw(screen)
     enemies.draw(screen)
     collectibles.draw(screen)
-    energies.draw(screen)
+    for energy in energies:
+        screen.blit(energy.image, energy.rect)
 
     #проверяем все возможные коллизии
     check_collision_platforms(player, platforms_list)

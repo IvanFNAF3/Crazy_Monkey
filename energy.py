@@ -7,8 +7,8 @@ class Energy(pygame.sprite.Sprite):
         super().__init__()
 
         #создание изображения для спрайта
-        self.image = pygame.Surface((23, 23))
-        self.image.fill(ENERGY_COLOR)
+        self.image = pygame.Surface((32, 32))
+        self.image = pygame.image.load("sprites/energy.png")
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
