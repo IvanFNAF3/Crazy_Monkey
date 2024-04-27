@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         
-        self.image = monkey_static
+        self.image = miko_static
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()

@@ -49,12 +49,16 @@ SCORE_COLOR = (0, 0, 0)
 #Создаём меню
 def menu():
     global is_music_playing
+    global is_skin_miko
+    is_skin_miko = False
     pygame.mixer.music.play(-1)
     screen.blit(bg_menu, (0, 0))
 
     start_button = Button("sprites/play_ui_1.png", 900, 745)
     exit_button = Button("sprites/exit_ui.png", 910, 981)
     aboutgame_button = Button("sprites/aboutgame_ui.png", 910, 875)
+    skinmonkey_button = Button("sprites/monkey_static_but_pressed.png", 60, HEIGHT - 170)
+    skinmiko_button = Button("sprites/miko_but.png", 200, HEIGHT - 170)
 
     if is_music_playing == True:
         msc_off_button = Button("sprites/msc_off_ui.png", 60, HEIGHT - 60)
@@ -63,7 +67,9 @@ def menu():
         msc_off_button = Button("sprites/msc_off_ui_selected.png", 60, HEIGHT - 60)
         msc_on_button = Button("sprites/msc_on_ui.png", 200, HEIGHT - 60)
 
-    buttons = [start_button, exit_button, msc_on_button, msc_off_button, aboutgame_button]
+    
+
+    buttons = [start_button, exit_button, msc_on_button, msc_off_button,skinmiko_button , aboutgame_button, skinmonkey_button]
 
     init_but(screen, buttons)
     pygame.display.update()
@@ -94,6 +100,14 @@ def menu():
                     is_music_playing = True
                 elif aboutgame_button.rect.collidepoint(x, y):
                     tutorial()
+                elif skinmiko_button.rect.collidepoint(x, y):
+                    is_skin_miko = True
+                    skinmiko_button.change_img("sprites/miko_but_pressed.png") 
+                    skinmonkey_button.change_img("sprites/monkey_static_but.png")
+                elif skinmonkey_button.rect.collidepoint(x, y):
+                    is_skin_miko = False
+                    skinmiko_button.change_img("sprites/miko_but.png") 
+                    skinmonkey_button.change_img("sprites/monkey_static_but_pressed.png")
 
 def tutorial():
     global is_music_playing
@@ -196,7 +210,10 @@ def check_collision_energies(object, energies_list, _maxReloadEnergy):
             if(reload_energy <= 0):
                 object.speed = 10
                 reload_energy = _maxReloadEnergy
-                object.change_image(monkey_crazy)
+                if(is_skin_miko == True):
+                    object.change_image(miko_energy)
+                else:
+                    object.change_image(monkey_crazy)
 
 
 #создаем экран, счетчик частоты кадров и очков
@@ -214,7 +231,16 @@ def game():
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
-    player_sprite = player.image
+    if(is_skin_miko):
+        player_skin = miko_static
+    else:
+        player_skin = monkey_static
+
+    global player_img
+    player_img = player_skin
+
+    player.image = player_skin
+    screen.blit(player.image, player.rect)
     h_platforms_list = [H_Platform(0, HEIGHT-25, WIDTH, 50),H_Platform(50, 150, 100, 20), H_Platform(100, 350, 100, 20), H_Platform(250, 170, 100, 20), H_Platform(750, 180, 400, 20), H_Platform(950, 280, 450, 20), H_Platform(1250, 400, 190, 20), H_Platform(450, 400, 100, 20), H_Platform(500, 650, 350, 20), H_Platform(700, 540, 200, 20), H_Platform(1000, 450, 170, 20)]
     v_platforms_list = [V_Platform(1900, 0, 20, 2 * HEIGHT - 50), V_Platform(0, 0, 20, 2 * HEIGHT - 50)]
     enemies_list = [Enemy(120, 270), Enemy(1300, 200),Enemy(1100,200), Enemy(575,570), Enemy(1300,320)]
@@ -263,16 +289,18 @@ def game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                quit()
         #проверяем нажатие на клавиши для перемещения
         keys = pygame.key.get_pressed()
         player.x_velocity = 0
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             player.x_velocity = -player.speed
-            player_sprite = pygame.transform.flip(player.image, True, False)
+            player_img = pygame.transform.flip(player.image, True, False)
             #screen.blit(player.image, player.rect)
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             player.x_velocity = player.speed
-            player_sprite = pygame.transform.flip(player.image, False, False)
+            player_img = pygame.transform.flip(player.image, False, False)
         #условие прыжка более сложное
         if(keys[pygame.K_SPACE] or reload_energy > 0) and player.on_ground == True:
             player.y_velocity = -9
@@ -289,8 +317,8 @@ def game():
 
         #отрисовываем фон, платформы, врагов и собираемые предметы
         screen.blit(bg_gameplay, (0, 0))
-        
-        screen.blit(player_sprite, player.rect)
+             
+        screen.blit(player_img, player.rect)
         player_and_platforms.draw(screen)
         for enemy in enemies:
             screen.blit(enemy.image, enemy.rect)
@@ -312,7 +340,7 @@ def game():
             reload_energy -= 1/60
         elif(reload_energy <= 0):
             player.speed = 5
-            player.change_image(monkey_static)
+            player.change_image(player_skin)
 
         if(player.cooldown > 0):
             player.cooldown -= 1/60
