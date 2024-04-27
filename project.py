@@ -168,7 +168,7 @@ def game():
     maxReload_energy = 5
 
 
-    #создаем игрока, платформы, врагов и то, что будем собирать в игре
+#создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
     platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20), Platform(750, 180, 400, 20), Platform(950, 280, 450, 20), Platform(1050, 60, 150, 20), Platform(1250, 400, 110, 20), Platform(450, 400, 100, 20), Platform(500, 650, 350, 20), Platform(700, 510, 200, 20)]
     enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
