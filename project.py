@@ -206,9 +206,9 @@ def game():
     player = Player(50, 50)
     h_platforms_list = [H_Platform(0, HEIGHT-25, WIDTH, 50),H_Platform(50, 150, 100, 20), H_Platform(100, 350, 100, 20), H_Platform(250, 170, 100, 20), H_Platform(750, 180, 400, 20), H_Platform(950, 280, 450, 20), H_Platform(1250, 400, 190, 20), H_Platform(450, 400, 100, 20), H_Platform(500, 650, 350, 20), H_Platform(700, 540, 200, 20), H_Platform(1000, 450, 170, 20)]
     v_platforms_list = [V_Platform(1900, 0, 20, 2 * HEIGHT - 50), V_Platform(0, 0, 20, 2 * HEIGHT - 50)]
-    enemies_list = [Enemy(120, 315), Enemy(1150, 245)]
-    collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(1100, 40), Collectible(500, 380)]
-    energies_list = [Energy(320, 145), Energy(1000, 260), Energy(1150, 40)]
+    enemies_list = [Enemy(120, 325), Enemy(1300, 255),Enemy(1100,255), Enemy(575,625), Enemy(1300,375)]
+    collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(500, 380), Collectible(600, 630)]
+    energies_list = [Energy(320, 145), Energy(1000, 260), Energy(550, 630)]
 
     #счёт игры
     font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
