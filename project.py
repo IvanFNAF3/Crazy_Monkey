@@ -36,7 +36,7 @@ from init import*
 
 
 #инициализация Pygame
-pygame.init()
+pygame.init() 
 
 #константы-параметры окна
 WIDTH = 1920
@@ -163,6 +163,7 @@ def check_collision_enemies(object, enemies_list):
             #объект пропадает из всех групп спрайтов и игра заканчивается
             if reload_energy > 0:
                 enemy.kill()
+                enemies_list.remove(enemy)
             else:
                 if object.cooldown <= 0:
                     object.health -= 1

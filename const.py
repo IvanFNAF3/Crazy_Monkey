@@ -1,5 +1,6 @@
 import pygame
 
+
 #Здесь все спрайты игры в отдельных переменных для удобства
 bg_gameplay = pygame.image.load("sprites/BG.jpg")
 bg_menu = pygame.image.load("sprites/BG_menu.png")
