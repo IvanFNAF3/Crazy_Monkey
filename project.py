@@ -33,6 +33,7 @@ from energy import*
 from const import*
 from interface import*
 from init import*
+from portal import*
 
 
 #инициализация Pygame
@@ -52,6 +53,7 @@ def menu():
     global is_skin_miko
     is_skin_miko = False
     pygame.mixer.music.play(-1)
+    pygame.mixer.pause()
     screen.blit(bg_menu, (0, 0))
 
     start_button = Button("sprites/play_ui_1.png", 900, 745)
@@ -84,27 +86,34 @@ def menu():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if start_button.rect.collidepoint(x, y):
+                    click.play()
                     game()
                 elif exit_button.rect.collidepoint(x, y):
+                    click.play()
                     pygame.quit()
                     quit()
                 elif msc_off_button.rect.collidepoint(x, y):
+                    click.play()
                     pygame.mixer.music.set_volume(0.0)
                     msc_off_button.change_img("sprites/msc_off_ui_selected.png") 
                     msc_on_button.change_img("sprites/msc_on_ui.png")
                     is_music_playing = False 
                 elif msc_on_button.rect.collidepoint(x, y):
+                    click.play()
                     pygame.mixer.music.set_volume(0.4)
                     msc_off_button.change_img("sprites/msc_off_ui.png") 
                     msc_on_button.change_img("sprites/msc_on_ui_selected.png")
                     is_music_playing = True
                 elif aboutgame_button.rect.collidepoint(x, y):
+                    click.play()
                     tutorial()
                 elif skinmiko_button.rect.collidepoint(x, y):
+                    click.play()
                     is_skin_miko = True
                     skinmiko_button.change_img("sprites/miko_but_pressed.png") 
                     skinmonkey_button.change_img("sprites/monkey_static_but.png")
                 elif skinmonkey_button.rect.collidepoint(x, y):
+                    click.play()
                     is_skin_miko = False
                     skinmiko_button.change_img("sprites/miko_but.png") 
                     skinmonkey_button.change_img("sprites/monkey_static_but_pressed.png")
@@ -130,10 +139,43 @@ def tutorial():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if close_button.rect.collidepoint(x, y):
+                    click.play()
+                    menu()
+
+def youwin():
+    global is_music_playing
+    pygame.mixer.music.stop()
+    if is_music_playing == True:
+        win.play()
+    screen.blit(bg_youwin, (0,0))
+
+    yes_button = Button("sprites/yes_ui.png", 750, 800)
+    no_button = Button("sprites/no_ui.png", 1000, 800)
+
+    buttons = [yes_button, no_button]
+    init_but(screen, buttons)
+
+    while True:
+        init_but(screen, buttons)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if yes_button.rect.collidepoint(x, y):
+                    click.play()
+                    game()
+                elif no_button.rect.collidepoint(x, y):
+                    click.play()
                     menu()
 
 def gameover():
     global is_music_playing
+    pygame.mixer.music.stop()
+    if is_music_playing == True:
+        lose.play()
     screen.blit(bg_gameover, (0,0))
 
     yes_button = Button("sprites/yes_ui.png", 750, 800)
@@ -152,8 +194,10 @@ def gameover():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if yes_button.rect.collidepoint(x, y):
+                    click.play()
                     game()
                 elif no_button.rect.collidepoint(x, y):
+                    click.play()
                     menu()
 
 
@@ -190,6 +234,10 @@ def check_v_collision_platforms(object, platform_list):
                 #ставим спрайт справа от платформы
                 object.rect.left = platform.rect.right
 
+def check_collision_portal(object, portal):
+    if object.rect.colliderect(portal.rect):
+        youwin()
+
 #функция проверки коллизии выбранного объекта с объектами Enemies
 def check_collision_enemies(object, enemies_list):
     #running делаем видимой внутри функции чтобы было возможно
@@ -215,17 +263,22 @@ def check_collision_enemies(object, enemies_list):
 def check_collision_collectibles(object, collectibles_list):
     #делаем видимыми объекты для подбора в игре и очки
     global score
+    global has_portal
     #если object касается collictible 
     for collectible in collectibles_list:
         if object.rect.colliderect(collectible.rect):
+            #Звук подбирания монетки
+            coin_sound.play()
             #убираем этот объект из всех групп
             collectible.kill()
             #убираем этот объект из списка (чтобы не было проверки коллизии)
             collectibles_list.remove(collectible)
             #прибавляем одно очко
             score += 1
-            if(score == 11):
-                menu()
+            if(score == 15):
+                global portal 
+                portal = Portal(60, 225, 20, 125)
+                has_portal = True
 
 def check_collision_energies(object, energies_list, _maxReloadEnergy):
     global speed
@@ -251,12 +304,18 @@ is_music_playing = True
 def game():
     global score
     score = 0
+    global is_music_playing
     global reload_energy
+    global has_portal
+    has_portal = False
     global timer
     timer = 35
     reload_energy = 0
     maxReload_energy = 5
 
+    pygame.mixer.stop()
+    if is_music_playing == True:
+        pygame.mixer.music.play(-1)
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
@@ -355,9 +414,12 @@ def game():
         player_and_platforms.draw(screen)
         for enemy in enemies:
             screen.blit(enemy.image, enemy.rect)
-        collectibles.draw(screen)
+        for collectible in collectibles:
+            screen.blit(collectible.image, collectible.rect)
         for energy in energies:
             screen.blit(energy.image, energy.rect)
+        if has_portal == True:
+            screen.blit(portal.image, portal.rect)
 
         #проверяем все возможные коллизии
         check_h_collision_platforms(player, h_platforms_list)
@@ -365,6 +427,8 @@ def game():
         check_collision_enemies(player, enemies_list)
         check_collision_collectibles(player, collectibles_list)
         check_collision_energies(player, energies_list, maxReload_energy)
+        if has_portal == True:
+            check_collision_portal(player, portal)
 
         print(player.y_velocity)
 

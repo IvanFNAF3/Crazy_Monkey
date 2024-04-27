@@ -1,13 +1,13 @@
-#класс для поднимаемых предметов
 import pygame
-from const import*
 
-class Collectible(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+PORTAL_COLOR = (0, 206, 209)
+
+class Portal(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
         super().__init__()
-
         #создание изображения для спрайта
-        self.image = coin
+        self.image = pygame.Surface((width, height))
+        self.image.fill(PORTAL_COLOR)
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
