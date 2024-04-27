@@ -243,8 +243,8 @@ def game():
     screen.blit(player.image, player.rect)
     h_platforms_list = [H_Platform(0, HEIGHT-25, WIDTH, 50),H_Platform(50, 150, 100, 20), H_Platform(100, 350, 100, 20), H_Platform(250, 170, 100, 20), H_Platform(750, 180, 400, 20), H_Platform(950, 280, 450, 20), H_Platform(1250, 400, 190, 20), H_Platform(450, 450, 100, 20), H_Platform(500, 650, 350, 20), H_Platform(700, 540, 200, 20), H_Platform(1000, 450, 170, 20), H_Platform(1100, 900, 170, 20), H_Platform(890, 775, 140, 20)]
     v_platforms_list = [V_Platform(1900, 0, 20, 2 * HEIGHT - 50), V_Platform(0, 0, 20, 2 * HEIGHT - 50)]
-    enemies_list = [Enemy(120, 270), Enemy(1300, 200),Enemy(1100,200), Enemy(575,570), Enemy(1300,320)]
-    collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(500, 380), Collectible(600, 630), Collectible(900, 380), Collectible(1500, 280), Collectible(555, 40), Collectible(525, 200)]
+    enemies_list = [Enemy(120, 270), Enemy(1300, 200),Enemy(1100,200), Enemy(575,570), Enemy(1300,320), Enemy(50,HEIGHT-110), Enemy(300,HEIGHT-110),Enemy(550,HEIGHT-110),Enemy(800,HEIGHT-110), Enemy(1050,HEIGHT-110), Enemy(1300, HEIGHT-110), Enemy(1550,HEIGHT-110), Enemy(1150, 820)]
+    collectibles_list = [Collectible(280, 145), Collectible(150, 325), Collectible(770, 160 ), Collectible(1050, 260 ),Collectible(1150, 260), Collectible(500, 380), Collectible(600, 630), Collectible(900, 380), Collectible(1500, 280), Collectible(555, 40), Collectible(525, 200), Collectible(920,735), Collectible(1050, 425), Collectible(775,515), Collectible(1000, 160)]
     energies_list = [Energy(320, 145), Energy(1000, 260), Energy(550, 630)]
 
     #счёт игры
