@@ -2,6 +2,7 @@ import pygame
 
 PORTAL_COLOR = (0, 206, 209)
 
+#Класс для портала в конце игры
 class Portal(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         super().__init__()

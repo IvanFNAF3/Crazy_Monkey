@@ -1,4 +1,4 @@
-#класс для поднимаемых предметов
+#класс для энергетика
 import pygame
 
 class Energy(pygame.sprite.Sprite):

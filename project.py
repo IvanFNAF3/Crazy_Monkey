@@ -22,7 +22,7 @@
 #Управление: стрелки клавиатуры для движения, пробел для прыжка#
 ################################################################
 
-#подключние бибилиотек
+#подключение всех бибилиотек
 import pygame
 from audiofiles import*
 from platforms import*
@@ -49,79 +49,95 @@ SCORE_COLOR = (0, 0, 0)
 
 #Создаём меню
 def menu():
+    #Создаём глобальные переменнные
     global is_music_playing
     global is_skin_miko
     is_skin_miko = False
+
+    #отключаем все звуки и включаем музыку
     pygame.mixer.music.play(-1)
     pygame.mixer.pause()
+
+    #отрисовываем фон меню
     screen.blit(bg_menu, (0, 0))
 
+    #Добавляем кнопки играть, выход, об игре, скин обезьяны, скин мико
     start_button = Button("sprites/play_ui_1.png", 900, 745)
     exit_button = Button("sprites/exit_ui.png", 910, 981)
     aboutgame_button = Button("sprites/aboutgame_ui.png", 910, 875)
     skinmonkey_button = Button("sprites/monkey_static_but_pressed.png", 60, HEIGHT - 170)
     skinmiko_button = Button("sprites/miko_but.png", 200, HEIGHT - 170)
 
-    if is_music_playing == True:
+    #Добавляем кнопки вкл/выкл звук
+    if is_music_playing == True: #Если музыка играет, то выбранная кнопка вкл
         msc_off_button = Button("sprites/msc_off_ui.png", 60, HEIGHT - 60)
         msc_on_button = Button("sprites/msc_on_ui_selected.png", 200, HEIGHT - 60)
-    else:
+    else: #Иначе, выбрана кнопка выкл
         msc_off_button = Button("sprites/msc_off_ui_selected.png", 60, HEIGHT - 60)
         msc_on_button = Button("sprites/msc_on_ui.png", 200, HEIGHT - 60)
 
     
-
+    #Вносим все кнопки в список
     buttons = [start_button, exit_button, msc_on_button, msc_off_button,skinmiko_button , aboutgame_button, skinmonkey_button]
 
+    #Инициализируем список
     init_but(screen, buttons)
+
+    #Обновляем монитор
     pygame.display.update()
 
+    #Код идущий каждый кадр
     while True:
+        #Отрисовываем все кнопки и обновляем дисплей
         init_but(screen, buttons)
         pygame.display.update()
+
+        #Проверка выхода
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            #Проверка нажатия лкм
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if start_button.rect.collidepoint(x, y):
-                    click.play()
-                    game()
-                elif exit_button.rect.collidepoint(x, y):
-                    click.play()
-                    pygame.quit()
+                if start_button.rect.collidepoint(x, y): #Кнопка играть
+                    click.play() #Звук клика
+                    game() #Переход в игру
+                elif exit_button.rect.collidepoint(x, y): #Кнопка выхода
+                    click.play() #Звук клика
+                    pygame.quit() #Выход из игры
                     quit()
-                elif msc_off_button.rect.collidepoint(x, y):
-                    click.play()
-                    pygame.mixer.music.set_volume(0.0)
+                elif msc_off_button.rect.collidepoint(x, y): #Кнопка выкл музыку
+                    click.play() #Звук клика
+                    pygame.mixer.music.set_volume(0.0) #Ставим громкость на 0
                     msc_off_button.change_img("sprites/msc_off_ui_selected.png") 
                     msc_on_button.change_img("sprites/msc_on_ui.png")
                     is_music_playing = False 
-                elif msc_on_button.rect.collidepoint(x, y):
-                    click.play()
-                    pygame.mixer.music.set_volume(0.4)
+                elif msc_on_button.rect.collidepoint(x, y): #Кнопка вкл музыку
+                    click.play() #Звук клика
+                    pygame.mixer.music.set_volume(0.4) #Ставим громкость на 0.4
                     msc_off_button.change_img("sprites/msc_off_ui.png") 
                     msc_on_button.change_img("sprites/msc_on_ui_selected.png")
                     is_music_playing = True
-                elif aboutgame_button.rect.collidepoint(x, y):
-                    click.play()
+                elif aboutgame_button.rect.collidepoint(x, y): #кнопка об игре
+                    click.play() #Звук клика
                     tutorial()
-                elif skinmiko_button.rect.collidepoint(x, y):
-                    click.play()
-                    is_skin_miko = True
+                elif skinmiko_button.rect.collidepoint(x, y): #Кнопка скин мико
+                    click.play() #Звук клика
+                    is_skin_miko = True #Устанавливаем скин мико
                     skinmiko_button.change_img("sprites/miko_but_pressed.png") 
                     skinmonkey_button.change_img("sprites/monkey_static_but.png")
-                elif skinmonkey_button.rect.collidepoint(x, y):
-                    click.play()
-                    is_skin_miko = False
+                elif skinmonkey_button.rect.collidepoint(x, y): #Кнопка скин обезьяны
+                    click.play() #Звук клика
+                    is_skin_miko = False #Устанавливаем скин обезьянки
                     skinmiko_button.change_img("sprites/miko_but.png") 
                     skinmonkey_button.change_img("sprites/monkey_static_but_pressed.png")
 
-def tutorial():
+def tutorial(): #Окно об игре
     global is_music_playing
-    screen.blit(bg_aboutgame, (0, 0))
+    screen.blit(bg_aboutgame, (0, 0)) #Ставим фон
 
+    #Кнопка закрытия
     close_button = Button("sprites/exit_menu_ui.png", 900, 800)
 
     buttons = [close_button]
@@ -142,13 +158,14 @@ def tutorial():
                     click.play()
                     menu()
 
-def youwin():
+def youwin(): #Окно победы
     global is_music_playing
     pygame.mixer.music.stop()
     if is_music_playing == True:
-        win.play()
+        win.play() #Музыка для победы
     screen.blit(bg_youwin, (0,0))
 
+    #Кнопки да и нет
     yes_button = Button("sprites/yes_ui.png", 750, 800)
     no_button = Button("sprites/no_ui.png", 1000, 800)
 
@@ -171,7 +188,7 @@ def youwin():
                     click.play()
                     menu()
 
-def gameover():
+def gameover(): #Окно поражения (тоже самое что и с победой)
     global is_music_playing
     pygame.mixer.music.stop()
     if is_music_playing == True:
@@ -201,7 +218,7 @@ def gameover():
                     menu()
 
 
-#функция для проверки коллизий c платформой
+#функция для проверки коллизий c горизонтальной платформой
 def check_h_collision_platforms(object, platform_list):
     #перебираем все платформы из списка (не группы спрайтов)
     for platform in platform_list:
@@ -216,13 +233,8 @@ def check_h_collision_platforms(object, platform_list):
                 #ставим спрайт снизу платформы
                 object.rect.top = platform.rect.bottom
                 object.y_velocity = 0.6
-            elif object.x_velocity > 0: # Если спрайт движется вправо
-                #ставим спрайт слева от платформы
-                object.rect.right = platform.rect.left
-            elif object.x_velocity < 0: # Если спрайт движется влево
-                #ставим спрайт справа от платформы
-                object.rect.left = platform.rect.right
 
+#функция для проверки коллизий c вертикальной платформой
 def check_v_collision_platforms(object, platform_list):
     for platform in platform_list:
         if object.rect.colliderect(platform.rect):
@@ -234,9 +246,10 @@ def check_v_collision_platforms(object, platform_list):
                 #ставим спрайт справа от платформы
                 object.rect.left = platform.rect.right
 
+#функция для проверки коллизий c порталом
 def check_collision_portal(object, portal):
     if object.rect.colliderect(portal.rect):
-        youwin()
+        youwin() #Победа
 
 #функция проверки коллизии выбранного объекта с объектами Enemies
 def check_collision_enemies(object, enemies_list):
@@ -247,12 +260,15 @@ def check_collision_enemies(object, enemies_list):
     for enemy in enemies_list:
         #при коллизии
         if object.rect.colliderect(enemy.rect):
-            #объект пропадает из всех групп спрайтов и игра заканчивается
+            #Если взят энергетик, то враг умирает
             if reload_energy > 0:
+                kill_sound.play()
                 enemy.kill()
                 enemies_list.remove(enemy)
+            #Иначе мы теряем одну жизнь
             else:
                 if object.cooldown <= 0:
+                    damage_sound.play()
                     object.health -= 1
                     if(object.health <= 0):
                         gameover()
@@ -277,23 +293,26 @@ def check_collision_collectibles(object, collectibles_list):
             score += 1
             if(score == 15):
                 global portal 
+                portal_sound.play()
                 portal = Portal(60, 225, 20, 125)
                 has_portal = True
 
+#функция для проверки коллизий c энергетиком
 def check_collision_energies(object, energies_list, _maxReloadEnergy):
     global speed
     global reload_energy
     for energy in energies_list:
         if object.rect.colliderect(energy.rect):
+            #Мы становимся быстрее и больше из-за нового спрайта
             energy.kill()
+            energy_sound.play()
             energies_list.remove(energy)
-            if(reload_energy <= 0):
-                object.speed = 10
-                reload_energy = _maxReloadEnergy
-                if(is_skin_miko == True):
-                    object.change_image(miko_energy)
-                else:
-                    object.change_image(monkey_crazy)
+            object.speed = 10
+            reload_energy = _maxReloadEnergy
+            if(is_skin_miko == True):
+                object.change_image(miko_energy)
+            else:
+                object.change_image(monkey_crazy)
 
 
 #создаем экран, счетчик частоты кадров и очков
@@ -301,7 +320,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 is_music_playing = True
 
-def game():
+def game(): #Окно игры
+    #Переменные
     global score
     score = 0
     global is_music_playing
@@ -313,12 +333,14 @@ def game():
     reload_energy = 0
     maxReload_energy = 5
 
+    #Включаем музыку
     pygame.mixer.stop()
     if is_music_playing == True:
         pygame.mixer.music.play(-1)
 
 #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(50, 50)
+    #включаем выбранный скин
     if(is_skin_miko):
         player_skin = miko_static
     else:
@@ -351,7 +373,7 @@ def game():
     font_timer = pygame.font.Font(None, 60)
     timer_text =font_timer.render("Времени осталось: ", str(timer), True, (0, 0, 0))
     timer_rect = timer_text.get_rect()
-    timer_rect.topleft = (WIDTH//2 - 100, 40)
+    timer_rect.topleft = (WIDTH//2 - 300, 40)
 
 
     #создаем групп спрайтов
@@ -430,8 +452,6 @@ def game():
         if has_portal == True:
             check_collision_portal(player, portal)
 
-        print(player.y_velocity)
-
         #уменьшаем перезарядку если есть
         if(reload_energy > 0):
             reload_energy -= 1/60
@@ -446,8 +466,6 @@ def game():
             timer -= 1/60 
         else:
             gameover()
-
-
 
         #обновление счёта на экране
         score_text = font.render("Счёт: " + str(score), True, SCORE_COLOR)

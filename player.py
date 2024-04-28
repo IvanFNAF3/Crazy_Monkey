@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
     health = 3
     speed = 5
     is_boosted = False
-    maxCooldown = 0.5
+    maxCooldown = 1.5
     cooldown = 0
     is_in_cooldown = False
 
