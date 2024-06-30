@@ -431,7 +431,6 @@ def game(): #Окно игры
 
         #отрисовываем фон, платформы, врагов и собираемые предметы
         screen.blit(bg_gameplay, (0, 0))
-             
         screen.blit(player_img, player.rect)
         player_and_platforms.draw(screen)
         for enemy in enemies:
